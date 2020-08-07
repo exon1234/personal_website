@@ -10,7 +10,73 @@
     random.sample(iter,k)# 进行K次无放回取样
     random.randrange(1,100,2)#随机1-100间步长2整数
     random.uniform(1.1,5.4)# 随机1.1-5.4之间浮点数
-  
+    # 基础语法
+```
+if...else、elif
+for...
+while...break、continue
+try...except
+for...else
+try...else
+列表推导式
+列表
+字典
+集合
+元祖
+数字
+字符
+'''
+# 概念
+'''
+闭包、装饰器
+类
+生成器、迭代器
+引用、复制
+'''
+# 内置方法
+'''
+as
+global
+return
+yeild
+next
+with
+lambad
+exec
+'''
+# 内置函数
+'''
+eval()
+map()
+reduce()
+mapreduce()
+filter()
+iter()
+open()
+isinstance()
+reverse()
+sorted()
+sort()
+range()
+type()
+dir()
+help()
+'''
+# python自带库
+'''
+import os
+import random
+import sys
+import socket
+import re
+import threading
+import time
+import datetime
+import zlib
+import math
+import  glob
+import json
+```
  + os
     ```
     import os
@@ -28,9 +94,10 @@
     os.mkdir(path)#创建文件夹
     os.mkdirs(path )#递归创建文件夹
     os.rename(src,dst)#重命名文件
-    os.remove(path)#删除文件
-    os.rmdir#删除文件夹
+    os.remove(path)#删除文件，是文件夹会抛出异常
+    os.rmdir#删除文件夹，非空会抛出异常
     os.pardir#获取当前目录父目录
+    os.rmovedirs(path) #d递归删除目录
        
 + file/open
     ```
@@ -50,13 +117,53 @@
         
 + socket
     ```
- 
+    import socket
+    s = socket.socket(family,type,proto)
+        # family是套接字家族，可以是AF_UNIX(本机通讯)或AF_INET（跨机器通过ip通讯）
+        #type是连接类型，SOCK_STREM（面向连接给予TCP）或SOCK_DGRAM（非连接UDP）
+    #  服务器端方法
+    s.bind（（ip，port））#传入元祖，包含ip和端口
+    s.listen(128) # 开启TCP监听，最大128连接数
+    client，address = s.accept() #获取连接和连接地址
+    
+    # 客户端方法
+    s.connect((ip,port)) # 与服务器建立TCP连接
+    s.connect_ex() #connect扩展版本，出错返回错误代码而不抛出异常
+      
+    # 公共方法
+    s.recv(1024)
+    s.send()
+    s.close()
+    s.getpeername()#获取远程套接字ip与端口
+    s.getsockname()#获取本地套接字ip与端口
+    
++ threading  
+    ```
+    import threading
+    def demo（a，b，c）
+        pass
+    线程1 = threading.Thread(target = demo，args = （a，b，c）)# 元祖1传参
+    线程1 = threading.Thread(target = demo，kwargs = {'a':1,'b':2,'c':3}) # 字典传参
+    线程1.Daemon(True) #设置为守护线程
+    线程1.start（） # 启动线程
+    线程1.join（）#设置主线程等待子线程结束，在start之后
+    
+    lock = threading.Lock #线程锁
+    lock = threading.RLock #嵌套线程锁，要求acquire与release成对出现
+    semaphore = threading.BoundedSemaphore(5) #允许同时存在5把锁 
+    lock.acquire() # 加锁
+    lock.release() # 释放锁
+    
+    event = threading.Event()# 事件，用于主线程控制其他线程直行
+    event.set() # 设置flag为TRUE
+    event.clear # 设置flag为false
+    event.is_set #检测是否设置了flag
+    event.wait #一直监听flag状态，为false会一直阻塞
+    
+
 + 正则re
     ```
 
-+ thread  
-    ```
-    
 + sys
     ```
     
@@ -73,3 +180,4 @@
 + PIL
 
 + GUI
+
