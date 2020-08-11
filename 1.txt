@@ -1,3 +1,14 @@
+# 基础语法
+
+    if...else、elif
+    for...
+    while...break、continue
+    try...except
+    for...if...break...else# break会连else一起跳出
+    try...else
+    列表、字典、集合、元组、数字、字符
+    send函数使得yield关键字拥有了返回值返回给它的左值。
+
 # python自带库
  + random
     ```
@@ -10,73 +21,7 @@
     random.sample(iter,k)# 进行K次无放回取样
     random.randrange(1,100,2)#随机1-100间步长2整数
     random.uniform(1.1,5.4)# 随机1.1-5.4之间浮点数
-    # 基础语法
-```
-if...else、elif
-for...
-while...break、continue
-try...except
-for...else
-try...else
-列表推导式
-列表
-字典
-集合
-元祖
-数字
-字符
-'''
-# 概念
-'''
-闭包、装饰器
-类
-生成器、迭代器
-引用、复制
-'''
-# 内置方法
-'''
-as
-global
-return
-yeild
-next
-with
-lambad
-exec
-'''
-# 内置函数
-'''
-eval()
-map()
-reduce()
-mapreduce()
-filter()
-iter()
-open()
-isinstance()
-reverse()
-sorted()
-sort()
-range()
-type()
-dir()
-help()
-'''
-# python自带库
-'''
-import os
-import random
-import sys
-import socket
-import re
-import threading
-import time
-import datetime
-import zlib
-import math
-import  glob
-import json
-```
+
  + os
     ```
     import os
@@ -87,10 +32,12 @@ import json
         os.R_OK :path是否可读 
         os.W_OK :path是否可写  
         os.X_OK :path是否可执行
-    os. chmod(path,mode)#修改权限
-    os.chown(path,uid.gid)#改变文件属主属组
+    os.chmod(path,mode)#修改权限
+    os.chown(path,uid,gid)#改变文件属主属组
     os.listdir(path)#返回指定文件夹包含的文件名称列表
     os.link(path,new) #创建硬链接
+    os.symlink(path,new) #创建软链接
+    
     os.mkdir(path)#创建文件夹
     os.mkdirs(path )#递归创建文件夹
     os.rename(src,dst)#重命名文件
@@ -98,6 +45,12 @@ import json
     os.rmdir#删除文件夹，非空会抛出异常
     os.pardir#获取当前目录父目录
     os.rmovedirs(path) #d递归删除目录
+    os.system(linux命令) #直接传入linux命令进行操作
+    os.path.* #与文件路径相关
+        os.path.exists(path) #查看文件是否存在
+        os.path.join(path,paths) #将目录拼接起来
+        os.path.split(path)   #将path分割为目录跟文件名以元祖返回
+        os.path.abspath(file)  #返回文件的绝对路径
        
 + file/open
     ```
@@ -137,12 +90,12 @@ import json
     s.getpeername()#获取远程套接字ip与端口
     s.getsockname()#获取本地套接字ip与端口
     
-+ threading  
++ threading  多线程
     ```
     import threading
     def demo（a，b，c）
         pass
-    线程1 = threading.Thread(target = demo，args = （a，b，c）)# 元祖1传参
+    线程1 = threading.Thread(target = demo，args = （a，b，c）)# 元祖传参
     线程1 = threading.Thread(target = demo，kwargs = {'a':1,'b':2,'c':3}) # 字典传参
     线程1.Daemon(True) #设置为守护线程
     线程1.start（） # 启动线程
@@ -160,20 +113,54 @@ import json
     event.is_set #检测是否设置了flag
     event.wait #一直监听flag状态，为false会一直阻塞
     
-
-+ 正则re
++ multiprocess 多进程
     ```
+    用法与threading相同
+    进程1 = multiprocessing.Process(target = demo，args = （a，b，c）)# 元祖传参
 
-+ sys
++ asyncio 协程
     ```
     
+    
++ json
+    ```
+    import json
+    json.dumps() # 将python数据类型json编码
+    json.loads() # json解码为python数据类型
+
++ glob库
+    ```
+    glob.glob(r’../*.py’) # 获取相对目录下所有py文件,返回对象是一个列表
+    glob.iglob(r’../*.py’) # 获取相对目录下所有py文件,返回对象是一个迭代器
+       
 + time
-
-+ datatime   
-
-
-+ 压缩文件
-
+    ```
+    import time
+    #获取时间
+    time.time() #获取时间戳
+    time.ctime() # 返回人类可读的字符串格式时间
+    time.gmtime() # 返回计算机可处理的时间格式，格林威治时间
+    time.localtime() #返回当地时间
+    #时间格式化
+    strftime(ts,tpl) #time.strftime("%Y-%m-%d %H:%M:%S",time.gmtime())
+    strptime(str,ts) # time.strptime('2018-01-26 12:55:20',"%Y-%m-%d %H:%M:%S")
+    time.mktime(time.localtime()) # 将时间转化为时间戳
+    #计时
+    time.sleep(i) #休眠i秒 
+    time.perf_counter() #获取从程序开始所经过的时间 
+    
++ sys
+    ```
+    import sys
+    sys.path #包含项目导包路径的列表
+    sys.modules #一个全局字典，模块导入时会被加入字典，再次导入会先查询该字典
+    sys.getfilesystemencoding() #文件系统使用编码方式
+    sys.getdefaultencoding() # 获取默认编码格式
+    sys.platform #获取当前系统平台
+      
++ 正则re
+    ```
+    
 # python第三方库
 + pymysql、mysql-connector
 
@@ -181,3 +168,57 @@ import json
 
 + GUI
 
++ numpy
+
++ matplotlib
+
++ pandas
+
++ tenseflow
+
++ scipy
+
+
+    exec(object[, globals[, locals]])
+    x = 10
+    expr = """
+    z = 30
+    sum = x + y + z
+    print(sum)
+    """
+    def func():
+        y = 20
+        exec(expr)
+        exec(expr, {'x': 1, 'y': 2})
+        exec(expr, {'x': 1, 'y': 2}, {'y': 3, 'z': 4})
+        
+    func()
+    
+# 概念
+    列表推导式
+    闭包、装饰器
+    类
+    生成器、迭代器
+    引用、复制
+    匿名函数
+
+# 内置函数
+    '''
+    send()
+    next()
+    eval()
+    map()
+    reduce()
+    mapreduce()
+    filter()
+    iter()
+    open()
+    isinstance()
+    reverse()
+    sorted()
+    sort()
+    range()
+    type()
+    dir()
+    help()
+    '''
