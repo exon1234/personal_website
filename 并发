@@ -1,0 +1,145 @@
+一、进程池
+from concurrent.futures import ProcessPoolExecutor
+import os,time,random
+def task(n):
+    print('%s is running' %os.getpid())
+    time.sleep(2)
+    return n**2
+
+
+if __name__ == '__main__':
+    p=ProcessPoolExecutor()  #不填则默认为cpu的个数
+    l=[]
+    start=time.time()
+    for i in range(10):
+        obj=p.submit(task,i)   #submit()方法返回的是一个future实例，要得到结果需要用obj.result()
+        l.append(obj)
+
+    p.shutdown()  #类似用from multiprocessing import Pool实现进程池中的close及join一起的作用
+    print('='*30)
+    # print([obj for obj in l])
+    print([obj.result() for obj in l])
+    print(time.time()-start)
+
+    #上面方法也可写成下面的方法
+    # start = time.time()
+    # with ProcessPoolExecutor() as p:   #类似打开文件,可省去.shutdown()
+    #     future_tasks = [p.submit(task, i) for i in range(10)]
+    # print('=' * 30)
+    # print([obj.result() for obj in future_tasks])
+    # print(time.time() - start)
+ 
+
+二、线程池
+from concurrent.futures import ProcessPoolExecutor,ThreadPoolExecutor
+import threading
+import os,time,random
+def task(n):
+    print('%s:%s is running' %(threading.currentThread().getName(),os.getpid()))
+    time.sleep(2)
+    return n**2
+
+if __name__ == '__main__':
+    p=ThreadPoolExecutor()   #不填则默认为cpu的个数*5
+    l=[]
+    start=time.time()
+    for i in range(10):
+        obj=p.submit(task,i)
+        l.append(obj)
+    p.shutdown()
+    print('='*30)
+    print([obj.result() for obj in l])
+    print(time.time()-start)
+
+#上面方法也可写成下面的方法
+    # start = time.time()
+    # with ThreadPoolExecutor() as p:   #类似打开文件,可省去.shutdown()
+    #     future_tasks = [p.submit(task, i) for i in range(10)]
+    # print('=' * 30)
+    # print([obj.result() for obj in future_tasks])
+    # print(time.time() - start)
+ 
+
+默认为异步执行
+
+#p.submit(task,i).result()即同步执行
+from concurrent.futures import ProcessPoolExecutor,ThreadPoolExecutor
+import os,time,random
+def task(n):
+    print('%s is running' %os.getpid())
+    time.sleep(2)
+    return n**2
+
+
+if __name__ == '__main__':
+    p=ProcessPoolExecutor()
+    start=time.time()
+    for i in range(10):
+        res=p.submit(task,i).result()
+        print(res)
+    print('='*30)
+    print(time.time()-start)
+ 
+
+ 
+
+三、回调函数
+from concurrent.futures import ProcessPoolExecutor,ThreadPoolExecutor
+import requests
+import os
+import time
+from threading import currentThread
+def get_page(url):
+    print('%s:<%s> is getting [%s]' %(currentThread().getName(),os.getpid(),url))
+    response=requests.get(url)
+    time.sleep(2)
+    return {'url':url,'text':response.text}
+def parse_page(res):  #此处的res是一个p.submit获得的一个future对象，不是结果
+    res=res.result()  #res.result()拿到的才是对应的结果
+    print('%s:<%s> parse [%s]' %(currentThread().getName(),os.getpid(),res['url']))
+    with open('db.txt','a') as f:
+        parse_res='url:%s size:%s\n' %(res['url'],len(res['text']))
+        f.write(parse_res)
+if __name__ == '__main__':
+    # p=ProcessPoolExecutor()
+    p=ThreadPoolExecutor()
+    urls = [
+        'https://www.baidu.com',
+        'https://www.baidu.com',
+        'https://www.baidu.com',
+        'https://www.baidu.com',
+        'https://www.baidu.com',
+        'https://www.baidu.com',
+    ]
+
+    for url in urls:
+        # multiprocessing.pool_obj.apply_async(get_page,args=(url,),callback=parse_page)
+        p.submit(get_page, url).add_done_callback(parse_page) #与之前的回调函数拿到的结果不同，这里拿到的是前面submit方法执行完后返回的对象，要.result才能拿到对应的结果
+    p.shutdown()
+    print('主',os.getpid())
+ 
+
+ 
+
+四、map方法
+和内置函数map差不多的用法，这个方法返回一个map(func, *iterables)迭代器，迭代器中的回调执行返回的结果有序的。
+
+以下是通过concurrent.futures模块下类ThreadPoolExecutor和ProcessPoolExecutor实例化的对象的map方法实现进程池、线程池
+
+from concurrent.futures import ProcessPoolExecutor,ThreadPoolExecutor
+import os,time
+def task(n):
+    print('%s is running' %os.getpid())
+    time.sleep(2)
+    return n**2
+
+
+if __name__ == '__main__':
+    # p=ProcessPoolExecutor()
+    p=ThreadPoolExecutor()
+    start = time.time()
+    obj=p.map(task,range(10))
+    p.shutdown()
+    print('='*30)
+    print(list(obj))
+    print(time.time() - start)
